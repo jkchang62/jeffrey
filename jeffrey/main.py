@@ -8,6 +8,9 @@ from pybricks.parameters import (Port, Stop, Direction, Button, Color,
 from pybricks.tools import print, wait, StopWatch
 
 ## Lab One Program
+# Team Members:
+# - Katherine Li
+# - Jonathan Chang
 
 # Global Variables
 # Booleans for completed objectives
