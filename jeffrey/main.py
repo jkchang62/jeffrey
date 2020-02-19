@@ -6,7 +6,6 @@ from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
 from pybricks.parameters import (Port, Stop, Direction, Button, Color,
                                  SoundFile, ImageFile, Align)
 from pybricks.tools import print, wait, StopWatch
-from pybricks.robotics import DriveBase
 
 ## Lab One Program
 
@@ -21,7 +20,6 @@ leftWheel = Motor(Port.A)
 rightWheel = Motor(Port.D)
 ultraSonicSensor = UltrasonicSensor(Port.S1)
 touchSensor = TouchSensor(Port.S4)
-robot = DriveBase(leftWheel, rightWheel, 56, 224)
 
 ## Note: 32 refers to the center button (center dark grey button in the instructions)!
 print("Reading input...")
@@ -30,11 +28,20 @@ print("Reading input...")
 # While loop that finishes when objective one is completed.
 while not (objectiveOneCompleted):
     if (32 in brick.buttons()):
-        # Move the robot forward.
-        robot.drive_time(50, 0, 5000)
+        # Remember the original distance to calculate delta x later.
+        originalDistance = ultraSonicSensor.distance()
+
+        # Move the robot forward for 5 seconds and then stop.
+        leftWheel.run(515)
+        rightWheel.run(515)
+        wait(5000)
+        leftWheel.stop()
+        rightWheel.stop()
 
         # Finish the objective.
         print("Objective One Completed")
+        print("Final distance moved is " + str((originalDistance - ultraSonicSensor.distance()) / 1000) + "m.")
+        brick.sound.beep()
         objectiveOneCompleted = True
 
 # Buffer
@@ -45,13 +52,16 @@ print("Reading input...")
 # While loop that finishes when objective two is completed.
 while not (objectiveTwoCompleted):
     if (32 in brick.buttons()):
-        # Keep the robot moving until it is <= 50 cm away from the object.
+        # Keep the robot moving until it is <= 50 cm away from the target.
         while (ultraSonicSensor.distance() > 500):
             # Move the robot forward.
-            robot.drive(150, 0)
+            leftWheel.run(500)
+            rightWheel.run(500)
 
-            # Buffer
-            wait(500)
+        # Stop the robot from moving once it is within 50cm away from the target.
+        leftWheel.stop()
+        rightWheel.stop()
+        print("The robot is " + str(ultraSonicSensor.distance() / 10) + " cm away.")
 
         # Finish the objective.
         print("Objective Two Completed")
@@ -64,39 +74,31 @@ wait(1000)
 # Objective Three: Bumping
 # While loop that finishes when objective three is completed.
 while not (objectiveThreeCompleted):
-    # Stopwatch for objective three; used for the goal of moving the robot backwards 50cm.
-    stopWatch = StopWatch()
-    stopWatchActivated = False
 
     if (32 in brick.buttons()):
         # While loop that runs as long as the robot has not hit an object.
         while not (touchSensor.pressed()):
-            # Moves the robot forwards.
-            robot.drive(150, 0)
+            # Move the robot forwards.
+            leftWheel.run(500)
+            rightWheel.run(500)
 
-            # Checking if the robot is ~50cm away from the objec to track how long it'll take to get back to that same position.
-            if (ultraSonicSensor.distance() >= 490 and ultraSonicSensor.distance() <= 510 and not stopWatchActivated):
-                # Restart the stopwatch and start tracking new time.
-                stopWatch.reset()
+        # Stops the wheels once contact has been made.
+        leftWheel.stop()
+        rightWheel.stop()
 
-            # Buffer
-            wait(50)
-
-        # End goal. Stopwatch is paused and the wheels will begin to turn counterclockwise for a certain duration of time, ideally back to 50cm away
-        # Stopping the stopwatch and changing the direction of the wheels
-        print("Contact has been made")
-        robot.stop()
-        stopWatch.pause()
-
-        # Reinitializing the wheels and drive base to go backwards
+        # Reinitializing the wheels to move the robot backwards.
         leftWheel = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         rightWheel = Motor(Port.D, Direction. COUNTERCLOCKWISE)
-        robot = DriveBase(leftWheel, rightWheel, 56, 224)
 
-        # Running and stopping the wheels after a certain amount of time
-        robot.drive_time(150, 0, stopWatch.time())
+        # Running the wheels for 2.5s before stopping them.
+        leftWheel.run(500)
+        rightWheel.run(500)
+        wait(2520)
+        leftWheel.stop()
+        rightWheel.stop()
         
         # Finish the objective.
+        print("The robot is " + str(ultraSonicSensor.distance() / 10) + " cm away.")
         print("Objective Three Completed")
         objectiveThreeCompleted = True
 
