@@ -12,8 +12,8 @@ from pybricks.tools import print, wait, StopWatch
 # - Katherine Li (730210643)
 # - Jonathan Chang (730169520)
 
-# # Global Variables
-# # Wheels and sensors, respectively
+# Global Variables
+# Wheels and sensors, respectively
 leftWheel = Motor(Port.A)
 rightWheel = Motor(Port.D)
 ultraSonicSensor = UltrasonicSensor(Port.S2)
@@ -38,7 +38,7 @@ while not (32 in brick.buttons()):
         # Moving the robot 5cm back.
         leftWheel.run(110)
         rightWheel.run(110)
-        wait(3000)
+        wait(2500)
         leftWheel.stop()
         rightWheel.stop()
 
@@ -80,20 +80,19 @@ while (ultraSonicSensor.distance() < 2050):
     # Else, rotate the wheels at the same rate and go straight.
     else:
         rightWheel.run(300)
-        leftWheel.run(300)    
+        leftWheel.run(300)
 
 
 # Objective Four: Turn at the End of the Wall.
-# WORK ON THIS PART!
 # Turn the robot
 leftWheel.stop()
-rightWheel.run(150)
+rightWheel.run(140)
 wait(3000)
 rightWheel.stop()
 
 # Move the robot 70cm
-leftWheel.run(486.15)
-rightWheel.run(486.15)
+leftWheel.run(486.1)
+rightWheel.run(486.1)
 wait(6000)
 leftWheel.stop()
 rightWheel.stop()
