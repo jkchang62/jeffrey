@@ -16,23 +16,17 @@ from pybricks.tools import print, wait, StopWatch
 # Wheels and sensors, respectively
 leftWheel = Motor(Port.A)
 rightWheel = Motor(Port.D)
-ultraSonicSensor = UltrasonicSensor(Port.S1)
-touchSensor = TouchSensor(Port.S4)
-
-print("Reading input...")
-
-# print(ultraSonicSensor.distance())
-
-# print("Done.")
+ultraSonicSensor = UltrasonicSensor(Port.S2)
+touchSensor = TouchSensor(Port.S3)
 
 # Objective One: Detect the Wall.
-while (32 in brick.buttons()) {
+while not (32 in brick.buttons()):
     # Move the robot forward.
     leftWheel.run(200)
     rightWheel.run(200)
 
-    # If the robot bumps into the wall, stop the robot and back it up by 50cm.
-    if (touchSensor.pressed()) {
+    # If the robot bumps into the wall, stop the robot and back it up by 5cm.
+    if (touchSensor.pressed()):
         # Stops the wheels once contact has been made.
         leftWheel.stop()
         rightWheel.stop()
@@ -41,65 +35,65 @@ while (32 in brick.buttons()) {
         leftWheel = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         rightWheel = Motor(Port.D, Direction. COUNTERCLOCKWISE)
 
-        # Moving the robot 50cm back.
-        leftWheel.run(55)
-        rightWheel.run(55)
+        # Moving the robot 5cm back.
+        leftWheel.run(110)
+        rightWheel.run(110)
         wait(4000)
         leftWheel.stop()
         rightWheel.stop()
 
-        # Testing purposes
-        print("The robot is " + ultraSonicSensor.distance() + " cm away from the wall")
-
         break
-    }
-}
 
 # Reinitialize the wheels to run forward again.
 leftWheel = Motor(Port.A)
 rightWheel = Motor(Port.D)
 
 # Objective Two: Turn Right at the Wall.
-# Determine the angular velocity required to turn a quarter circle.
-# Rotate the robot's left wheel until it is parallel to the wall
-# Let Θ = 90° or 1.5708 rad and t = 5s, then w = 0.31416
-# Using the equation v = wr, and w = 0.31416 and r = ?, then v = ?
-leftWheel.run()
+leftWheel.run(157)
+wait(3000)
 leftWheel.stop()
+
+# Continue the robot
+rightWheel.run(300)
+leftWheel.run(300)
 
 # Objective Three: Following the Wall.
 # While loops that ends once the the wall ends.
 # Maximum distance of the ultrasonic sensor is 255 cm
-while (ultraSonicSensor.distance() < 2550) {
-    if (ultraSonicSensor.distance() < 175) {
-        while (ultraSonicSensor.distance() < 175) {
-            rightWheel.stop()
-            leftWheel.run(10)
-        }
-    } else if (ultraSonicSensor.distance() > 200) {
-        while (ultraSonicSensor.distance() > 200) {
-            leftWheel.stop()
-            rightWheel.run(10)
-        }
-    }
+while (ultraSonicSensor.distance() < 2050):
 
-    rightWheel.run(55)
-    leftWheel.run(55)    
-}
+    # If the distance between the wall is too close, rotate more than the left wheel dramatically.
+    if (ultraSonicSensor.distance() < 60): 
+        rightWheel.run(200)
+        leftWheel.run(300)
+
+    # If the distance between the wall is close, rotate the left wheel faster.
+    elif (ultraSonicSensor.distance() < 175):
+        rightWheel.run(250)
+        leftWheel.run(300)
+
+    # If the distance between the wall is too far, rotate the right wheel faster.
+    elif (ultraSonicSensor.distance() > 200):
+        rightWheel.run(300)
+        leftWheel.run(250)
+
+    # Else, rotate the wheels at the same rate and go straight.
+    else:
+        rightWheel.run(300)
+        leftWheel.run(300)    
+
 
 # Objective Four: Turn at the End of the Wall.
-
-# Needs to move 6.20cm forwards before turning?
-leftWheel.run(34)
-rightWheel.run(34)
-wait(4000)
-
+# WORK ON THIS PART!
 # Turn the robot
-# ...
+leftWheel.stop()
+rightWheel.run(157)
+wait(3000)
+rightWheel.stop()
 
 # Move the robot 70cm
-leftWheel.run(25.21)
-rightWheel.run(25.21)
-wait(6000)
+leftWheel.run(200)
+rightWheel.run(200)
+wait(4000)
 leftWheel.stop()
 rightWheel.stop()
